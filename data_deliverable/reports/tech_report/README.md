@@ -1,43 +1,56 @@
-# README (tech report)
+# 1 - Data coverage #
 
-How many data points are there in total?
-We have over 3,000 unique county entries for analysis. 1,653 county-level data points include hate crime data, but 1,500 of our county-level data points are missing hate crime data.
-In total, we have over 3,000 unique county entries for analysis. There are no duplicates, as each has a unique county ID. Our dataset with hate crime data covers approximately 85% of the U.S. population, making it fairly representative.
-Originally, the FBI data covered 93% of the U.S. population, with 7% of counties not reporting hate crime data. Our dataset has lower coverage because we excluded state-level and federal agency data, as these cannot be mapped to counties.
+## How many data points are there in total? 
+In total, we have over 3,000 unique county entries for analysis. There are no duplicates, as each has a unique county ID, and our data on religious denominations, voting patterns, and socioeconomic status was comprehensive.
 
-1653 county entry data points with hate crime data
-1500 county data points with missing hate crime data
-In total more than 3000+ entries we can analyze (with no duplicates snice unique county ids)
-Our data with hate crime data covers approx 85% of the us population (so failry representative) → originally the fbi data covered 93% of the us population, with 7% not have reported hate crime data, we have lower amounts because we threw out state-level and federal agency data because we can’t split those to the county level
+## Any missing data?
+Our dependent variable, the hate crime dataset, covers approximately 85% of the U.S. population, making it fairly representative. Originally, this data, sourced from the FBI, covered 93% of the U.S. population, with 7% of counties not reporting hate crimes. Our dataset has lower coverage (85%) because we excluded state-level and federal agency data, which couldn’t be mapped to counties.
 Do you think this is enough data to perform your analysis later on?
-Our dataset covers all 3144 counties in the U.S., so plenty of data.
-We have missing hate crime data. This is cos not all counties report their hate crime data + some of the data is gathered at state or federal level, so cannot be granularized to county level
-Some attributes of hate crime data might be missing (due to sensitive nature), but the elections & religious groups data are comprehensive.
-What are the identifying attributes?
-County FIPS as primary key
+Yes. Our dataset covers almost all 3,144 counties in the U.S, so there’s plenty of data to work with. Even without complete coverage on hate crime data, we can still perform valuable analysis on (1) hate crime patterns across the United States, and (2) patterns surrounding missing data.
 
-Data sources:
-Religion census data from ARDA(Association of Religion Data Archives)
-Authoritative archive platform
-Very comprehensive, large sample size, highly granular
-Consent to usage as long as there’s proper citation
-Clean raw data, did not require cleaning.
-Hate crime data from FBI, collected in 2019 with their UCR data reporting
-Also authoritative and credible source / reputable since comes from a governmental agency
-Election data from \_\_\_\_
-Socio-economic data from the U.S. Bureau of Economic Analysis (BEA) and the USDA Economic Research Service (ERS).
-Sample info:
-The sample of 100 data points that they want was just taken from the first 100 entries in counties_data, ordered by county_fips. This is in no way representative of the US and the data as a whole, as this means these counties are primarily belonging to the first states when in alphabetical order of the US.
-However, if they mean the overall data, it is representative of the population as a whole (aka the country) since we have representation from most counties in the US. The risks of sampling bias include the risks associated with the census, falsified data (lower reporting than the truth) because hate crimes are not always reported to governmental agencies, and bias in that some states may be more likely not to report their hate crime data.
 
-Cleanliness:
-For the FBI hate crime data
-Since data mainly numeric, cleanliness of data meant checking for odd outliers (potential reporting mistakes), weird decimals when everything is supposed to be an int, etc.
-Missing values are present and documented, these correspond to counties that did not report on hate crime data during 2019. The FBI notes that data from Alabama is particularly missing for the 2019 data. This will inform our analysis later, but should not impact our overall data analysis since we’re looking at the country/national level scope, not comparing state results
-Duplicates occur maybe? Like the values might be the same for certain things, but that’s normal. There are no duplicate counties though because unique on county_fips
-We’re throwing the missing hate crime counties data away for analysis on predicting hate crime counts, but this once again shouldn’t affect us too badly since we’re not missing that much data. We are still planning on analyzing missing data to figure out if there are any trends in the counties not reporting on hate crimes. All counties who had at least one quearter’s report missing hate crime data was counted as a county not reporting on hate crime data. We’re also throwing away state and federal level data since we cannot examine these at county level.
-Oh my god main cleaning/joining challenge was the INSANE way I had to try to link random parts of the county to the overall county. Cos there wasn’t just counties and cities as entires, there were random boroughs, townships, etc. etc. + the names don’t correspond one to one to the city or county, since the entry was for the agency name, so I would get “x county police department” so I couldn’t join directly on a county name to fips dataset omg I hated this so bad
 
-Sensitive data: sadness :( we couldn’t use the original domestic abuse data we wanted due to access issues (needing to go through irb reporting etc. because of the sensitivity of the data). This made us pivot towards aggregated hate crime data instead. However, due to the sensitivity of the ; + granularity of the data difficult because it’s sensitive (most data at state-level and aggregated, very difficult to hone down even to the county level)
-Underreporting: Also because it’s sensitive/other factors at play, many places will underreport or not report hate crime data. While things have improved lately with increased regulation (90%+ of the American population is covered by the FBI hate crime dataset, and 85% of the population with our dataset), this still shines a light on how difficult acquiring this data is
-Grouping challenges: the religion census raw data has a very high granularity, tracking hundreds of religious groups individually. If we keep these groupings, there would be too many factors to track for the purpose of our analysis. Therefore, informed by the categories of religious ‘families’ and ‘traditions’ on ARDA(Association of Religion Data Archives), we divided religions into nine large buckets. We group the raw data into their respective buckets, then aggregate them.
+# 2 - Data sourcing, processing, analysis, & ethics ###
+_(Where is the data from? Comment on reputability, size, distribution, and possibility of skew or sampling bias. Any social / ethical considerations? Does it contain what you need in order to complete your proposed project?)_
+
+## I - Election data: 
+### SOURCE, REPUTABILITY, & ETHICAL CONSIDERATIONS:
+Our election data is from the MIT Election Data & Science Lab, which publishes county presidential election returns from 2000 to 2020. This dataset is a cleaned aggregation of county-level votes that each state’s federal administration collected. All except Maryland, South Dakota, and Washington have been confirmed by MIT as official in their sources description in the Harvard Dataverse. 
+To generate samples, we filtered to keep only 2020 data, and bucketed votes as “Democratic”, “Republican”, or “Other” - as third-party candidates were so diverse that there wasn’t any point trying to use them individually as predictive variables. While there was missing county data in earlier years, 2020 had no missing data. 
+### DATA PROCESSING / CLEANING:
+Missing votes from certain counties in less than 10 states. No missing votes from any state in 2020, but some missing votes in very early years.
+No duplicate or data type issues, as data was pre-cleaned by MIT. 
+Our only outlier was a region in Rhode Island labelled as “federal precinct”, with a small number of yearly votes, which had “N/A” as its FIP. As it was a very small region and presumably only a logistical grouping, we decided to throw it away: We couldn’t meaningfully match it with socioeconomic, religious, and racial metrics within the geographical location without a FIPS.
+
+## II - religious census data:
+### SOURCE, REPUTABILITY, & ETHICAL CONSIDERATIONS:
+Our religious census data was sourced from ARDA (the Association of Religion Data Archives). ARDA is an authoritative archive platform, and the data was comprehensive, highly granular in terms of denomination, and didn’t need to be cleaned further. There were no privacy concerns - the data was anonymized, and licensed for public use with citation.
+### DATA PROCESSING / CLEANING:
+One big challenge was bucketing. The religion census raw data has a very high granularity, tracking hundreds of religious groups individually (e.g. by region, by denomination, by temple or church). If we kept these groupings, there would be too many factors to track for the purpose of our analysis. Therefore, informed by the categories of religious ‘families’ and ‘traditions’ on ARDA, we divided religions into nine large buckets. We grouped the many denominations into their respective buckets, then aggregated them.
+
+## III - Hate crime data:
+### SOURCE, REPUTABILITY, & ETHICAL CONSIDERATIONS:
+Our hate crime data was collected by the FBI in 2019 as part of the Uniform Crime Reporting Program (UCR) - a national effort involving 18,000 law enforcement agencies who report crimes brought to their attention.
+As a governmental source, this dataset is authoritative and credible; however, presumably due to the data’s sensitive nature, not all counties and organizations made data public. Additionally, since many hate crimes are self-reported, there was the possibility of reporting bias in different countries depending on social and political factors.
+### DATA PROCESSING / CLEANING:
+Since data was mainly numeric, cleaning meant checking for outliers that seemed like reporting mistakes - eg. decimals or strange values.
+Missing values were present and documented in a separate table, corresponding to counties that didn’t report on 2019 hate crime data. The FBI notes that data from Alabama is particularly missing. This will inform our analysis later, but should not impact our overall data analysis since our scope is the entire nation, not specific state results.
+We throw away counties with 25% or more of hate crime data missing. We also throwing away state and federal level data, since we can’t examine these at the county level. But again, this won’t damage the quality of our analysis too badly, as (1) we have many remaining data points, and (2) we plan on analyzing missing data to see if there are trends in the counties not reporting hate crimes.
+Cleaning to join was a particularly tedious challenge: Since our dataset aggregated reports from cities, townships, boroughs, and other agencies (e.g. “x county police department”); we had to link these regions manually to counties (one of our primary keys aside from FIPS).
+
+## IV - Socioeconomic data
+### SOURCE, REPUTABILITY, & ETHICAL CONSIDERATIONS:
+Our median personal income data comes from the U.S. Bureau of Economic Analysis (BEA), and our unemployment rate data comes from the USDA Economic Research Service (ERS). Both are authoritative, public government sources containing every US county; sampling bias is minimal because it is sourced from direct census reports. 
+However, one limit is that economic data may not fully capture informal or underreported income sources, such as side gigs. Unemployment figures also may not take into account workers who have stopped actively seeking jobs or underemployment. 
+### DATA PROCESSING / CLEANING:
+Data cleaning: The income field initially contained non-numeric characters (commas, "(NA)") that required cleaning and conversion. No issues were found in unemployment data.
+There were no duplicate records found, and our two datasets only had one missing value each - negligible, considering we have 3,000+ data points. 
+Some of the datasets sometimes had different ways of naming and organizing regions - for instance, Virginia had counties, independent cities, and combined areas. Here, we kept counties with FIPS, but threw away data points about smaller regions, which were already listed under a reported county.
+
+## Concluding thoughts & next steps
+_Summarize any challenges or observations you have made since collecting your data. Then, discuss your next steps and how your data collection has impacted the type of analysis you will perform. (approximately 3-5 sentences)_
+Originally, we aimed to analyze domestic abuse data but pivoted to aggregated hate crime data due to access restrictions. Due to reporting inconsistencies and data sensitivity, hate crime data was also challenging to collect at the county level - not all counties report their data, and federal datasets often lacked granular detail. There was also the concern of skewed results due to reporting bias - we hypothesized that, in liberal areas, victims of hate crimes might self-report at higher rates.
+Another challenge was religious data bucketing: we categorized our religious affiliation groups into nine buckets, based on ARDA classifications, to manage the complexity of highly granular raw data.
+
+
+	
