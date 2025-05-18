@@ -10,6 +10,8 @@ import sys        # For outputting results to stdout
 from openai import OpenAI        # OpenAI API client
 from dotenv import load_dotenv   # For loading environment variables from .env file
 
+failure_output_rel_path = "output/failure_output.txt"
+
 ## NOTE: ##
 
 # This script takes in the following arguments, provided by file_manager.py
@@ -19,6 +21,7 @@ from dotenv import load_dotenv   # For loading environment variables from .env f
 
 # it outputs a LIST of JSON objects, each corresponding to a code.
 # each object contains the following fields: 
+# - "paragraph_id" ()
 # - "code"
 # - "quoted_evidence"
 # - "opposition_or_support"
@@ -30,16 +33,26 @@ from dotenv import load_dotenv   # For loading environment variables from .env f
 # python openai_querying_2.py "resources/codebook.txt" "sample_name" "sample_text"
 
 # For debugging: makes entire script return a sample correct output:
-testing_in_out = False
+testing_in_out = True
 sample_results = [
-    {"code": "Environmental Impact",
-     "quoted_evidence": "Some residents are concerned about the impact on local wildlife", 
-     "opposition_or_support": "opposition"}, 
-     {"code": "Sustainable Energy", "quoted_evidence": 
-      "others see it as a step towards sustainable energy", "opposition_or_support": "support"}
-      ]
+    {
+        # data point 1:
+        "paragraph_id": "1st 5 words of paragraph...last 5 words of paragraph.",
+        "code": "Environmental Impact",
+        "quoted_evidence": "Some residents are concerned about the impact on local wildlife", 
+        "opposition_or_support": "opposition"
+    },
+        # data point 2:
+    {
+        "paragraph_id": "1st 5 words of other paragraph...last 5 words.",
+        "code": "Sustainable Energy", 
+        "quoted_evidence": "others see it as a step towards sustainable energy", 
+        "opposition_or_support": "support"
+    }
+            ]
 
 if testing_in_out:
+    print("\n \n testing input/output between our two scripts: this script is currently hard-coded to pass a valid input into file_manager.py \n \n", file=sys.stderr)
     sys.stdout.write(json.dumps(sample_results))
     sys.exit()
 
@@ -59,28 +72,30 @@ parser.add_argument("article_text", type=str, help="article text")
 args = parser.parse_args()
 
 # Verify that the codebook file exists before proceeding
-print("Current working directory:", os.getcwd())
-print("Attempting to resolve path to codebook:", os.path.abspath(args.codebook_path))
+print("Current working directory:", os.getcwd(), file=sys.stderr)
+print("Attempting to resolve path to codebook:", os.path.abspath(args.codebook_path), file=sys.stderr)
 
 if not os.path.exists(args.codebook_path):
     raise FileNotFoundError(f"Codebook file not found: {args.codebook_path}")
 
 # Load the provided arguments into variables!
-with open(args.codebook_path, 'r') as f:
+with open(args.codebook_path, 'r', encoding="utf-8") as f:
     codebook_text = f.read() # Read the codebook text
 article_title = args.article_title
 article_text = args.article_text
 
 ## Sample correct args, used for debugging:
-testing_correct_args = True
+testing_correct_args = False
 if testing_correct_args:
+    print("\n \n Testing mode: we're inputting preset valid arguments to check that OpenAI querying works. \n \n", file=sys.stderr)
     codebook_text = "Assign codes as you see fit."
     article_title = "Wind Energy Project in the Midwest"
     article_text = "The wind energy project has been met with mixed reactions. Some residents are concerned about the impact on local wildlife, while others see it as a step towards sustainable energy."
 
-print(f"Args received: {codebook_text}, {article_title}, {article_text}")
+print(f"Args entered into OpenAI (check that codebook text, article title, & article text is correct!): \n {codebook_text}, {article_title}, {article_text} \n", file=sys.stderr)
 # TODO: set up openAI client & query.
-api_key = "personal api key redacted for safety!" # TODO: replace with a secure method of loading the key
+load_dotenv()
+api_key = os.getenv("OPENAI_API_KEY") # "personal api key redacted for safety!" # TODO: replace with a secure method of loading the key
 client = OpenAI(api_key=api_key)
 
 def query_openai(prompt, max_retries=5):
@@ -108,12 +123,15 @@ def query_openai(prompt, max_retries=5):
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0  # Use 0 temperature for more consistent results
             )
-            return json.loads(response.choices[0].message.content)
-
-        except json.JSONDecodeError:
-            # Handle cases where OpenAI's response isn't valid JSON
-            logging.error("Invalid JSON response from OpenAI.")
-            return {"code": "Error: invalid JSON", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}
+            print("success!")
+            return response.choices[0].message.content
+        
+        except not isinstance(response.choices[0].message.content, list):
+            # Handle cases where OpenAI's response isn't valid list
+            logging.error("Invalid list response from OpenAI.")
+            with open(failure_output_rel_path, "w") as file:
+                print(response, file=sys.stderr)
+            return [{"code": "Error: response not in list form", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}]
 
         except Exception as e:
             if "Rate limit" in str(e):
@@ -125,13 +143,17 @@ def query_openai(prompt, max_retries=5):
             elif "openai" in str(e).lower():
                 # Handle any other OpenAI-specific errors
                 logging.error(f"OpenAI API error: {e}")
-                return {"code": "Error: OpenAI API", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}
+                with open(failure_output_rel_path, "w") as file:
+                    print(response, file=sys.stderr)
+                return [{"code": "Error: OpenAI API", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}]
             else:
                 # Handle any unexpected errors
                 logging.error(f"Unexpected error: {e}")
-            return {"code": "Unexpected error", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}
+                with open(failure_output_rel_path, "w") as file:
+                    print(response, file=sys.stderr)
+            return [{"code": "Unexpected error", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}]
     # If we've exhausted all retries, return an error response
-    return {"code": "Error: Max retries exceeded", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}
+    return [{"code": "Error: Max retries exceeded", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}]
 
 # ############# Calling OpenAI API #############
 # Construct prompt:
@@ -146,22 +168,30 @@ For each code:
 CODEBOOK TEXT: {codebook_text}
 ARTICLE TEXT: {article_text}
 
-Please reply with a Python list of JSON objects that includes the following keys exactly:
-- "code"
+Please reply with a list of JSON objects that includes the following keys exactly:
 - "paragraph_id"
+- "code"
 - "quoted_evidence"
 - "opposition_or_support" (this should be "opposition", "support", or "neutral")
 
-Reply with a plain Python list of JSON objects with NO Markdown formatting.
+Reply only with a Python-style list of JSON objects. 
+Do not include backslashes, newline characters (\n), 
+or wrap the output in a string. I want the raw list, not its string representation.
 """
 
 # Call OpenAI API with the constructed prompt
 results = query_openai(prompt)
 
-print(str(results)[:500], "...") 
+print(f"OpenAI returned the following: {results}", file=sys.stderr) 
 
 sys.stdout.write(json.dumps(results))
 
-logging.info(f"Processing for {article_title} completed successfully.")
+logging.info(f"Processing for {article_title} completed.")
+
+
+# ChatCompletion(id='chatcmpl-BY1xQcwHTmr0kb1iJeV9Dtl6X9jBp', choices=[Choice(finish_reason='stop', index=0, logprobs=None, 
+#                                                                             message=ChatCompletionMessage(content='```python\n[\n    {\n        "code": "concern about impact on wildlife",\n        "paragraph_id": "The wind energy project...impact on local wildlife, while",\n        "quoted_evidence": "Some residents are concerned about the impact on local wildlife",\n        "opposition_or_support": "opposition"\n    },\n    {\n        "code": "step towards sustainable energy",\n        "paragraph_id": "impact on local wildlife, while...step towards sustainable energy.",\n        "quoted_evidence": "others see it as a step towards sustainable energy",\n        "opposition_or_support": "support"\n    }\n]\n```', refusal=None, role='assistant', annotations=[
+#                ], audio=None, function_call=None, tool_calls=None))], created=1747450376, model='gpt-4o-2024-08-06', object='chat.completion', service_tier='default', system_fingerprint='fp_90122d973c', usage=CompletionUsage(completion_tokens=128, prompt_tokens=231, total_tokens=359, completion_tokens_details=CompletionTokensDetails(accepted_prediction_tokens=0, audio_tokens=0, reasoning_tokens=0, rejected_prediction_tokens=0), prompt_tokens_details=PromptTokensDetails(audio_tokens=0, cached_tokens=0)))
+
 
 

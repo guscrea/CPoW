@@ -19,13 +19,13 @@ print("IMPORTANT: \n This script is meant to be run while we're in the run_query
 ## Set filepaths with run_querying_script as home directory:
 # (modify this if directory is rearranged!)
 codebook_rel_path = "resources/codebook.txt"
-news_data_rel_path = "../Data_newspaper_sample" 
-output_csv_rel_path = "output/output.csv"
-failure_output_rel_path = "output/failure_output.txt"
+news_data_rel_path = "../Data_newspapers_sample" 
+output_csv_rel_path = """C:/Users/rnzha/OneDrive/Desktop/RESL_lab/run_querying_script/output/output.csv"""
+failure_output_rel_path = """C:/Users/rnzha/OneDrive/Desktop/RESL_lab/run_querying_script/output/failure_output.txt"""
 ###############################################
 
 # extract folder names as list; each folder is named for its corresponding plant.
-result = subprocess.run(['ls'], capture_output = True, text=True)
+result = subprocess.run(['ls', news_data_rel_path], capture_output = True, text=True)
 folders_list = result.stdout.strip().split('\n')
 # TODO: print error & return if folder empty
 
@@ -73,7 +73,7 @@ print(f"all {len(title_text_dict.keys())} articles found this time: \n {list(tit
             
 
 ### Time to enter each article into our OpenAI querier script! ##
-implemented = True
+implemented = True # set as false to test article "unzipping" part of script
 if implemented:
     for key in title_text_dict:
         article_name = key
@@ -84,29 +84,51 @@ if implemented:
         # Querying OpenAI with our custom script:
         output_as_CompletedProcess = subprocess.run(
             ['python', 'openai_querying_2.py', codebook_rel_path, article_name, article_text],
+            cwd = '../run_querying_script', # this should error if we're in the wrong directory
             capture_output=True,
             text=True,
             check=True
             )
-        print("output from OpenAI: \n", output_as_CompletedProcess.stdout[:100], "...")
+        print("""output from OpenAI for article "{key[15]}...": \n""", output_as_CompletedProcess.stdout[:100], "...")
 
-    # try to parse stdout as JSON    
-    try:
-        # Parse the clean JSON output
-        output_as_JSONs = json.loads(output_as_CompletedProcess.stdout)
-    except json.JSONDecodeError as e:
-        with open(failure_output_rel_path, "w") as file:
-            print(output_as_CompletedProcess.stdout, file=file)
-        raise(f"❌ Failed to parse JSON: {e}\nRaw output:\n{output_as_CompletedProcess.stdout[:500]}... (saved in failure_output.txt)")
-        
-    print(type(output_as_JSONs))
 
 # We should return a list of JSON objects, one for each article.
 # The fields of each object are: code, paragraph_id, quoted_evidence, opposition_or_support
 
+# Is our raw output a list of JSONs?
+output_as_JSONs = json.loads(output_as_CompletedProcess.stdout)
+
+# 1 - Check if output is a list
+if isinstance(output_as_JSONs, list):
+    # 2 - Check if first item is a JSON object (actually, a `dict`)
+    if isinstance(output_as_JSONs[0], dict):
+        print("Output is a list of JSONs!")
+    else:
+        error_msg = "❌ Output is not list of JSONs!"
+else:
+    error_msg = "❌ Output is not a list!"
+
+# If we had an error, handle it
+if 'error_msg' in locals():
+    with open(failure_output_rel_path, "w") as file:
+        print(output_as_JSONs, file=file)
+    raise Exception(f"""{error_msg}
+        \nRaw output saved in failure_output.txt.
+        \n{output_as_JSONs}""")
+
+
 # We iterate through each object and add it as a CSV entry in our output file:
 with open(output_csv_rel_path, 'a', newline='') as fd:
     writer = csv.writer(fd)
+    # write header if CSV is empty:
+    if os.stat(output_csv_rel_path).st_size == 0:
+        print("csv file empty: writing in row names")
+        writer.writerow(["wind project name", 
+                         "article title", 
+                         "paragraph ID", ""
+                         "code", 
+                         "quoted evidence",
+                         "opposition or support"])
     for entry in output_as_JSONs:
         try:
             writer.writerow([
