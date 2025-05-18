@@ -30,10 +30,10 @@ failure_output_rel_path = "output/failure_output.txt"
 # "project_name", "article_title", "code", "quoted_evidence", "opposition_or_support"
 
 # To call this script manually from terminal, make sure you're in run_querying_script directory, then enter:
-# python openai_querying_2.py "resources/codebook.txt" "sample_name" "sample_text"
+# python openai_querying_2.py "resources/codebook.txt" "Noise pollution caused by wind farm" "Residents are worried about noise pollution caused by the wind energy project."
 
 # For debugging: makes entire script return a sample correct output:
-testing_in_out = True
+testing_in_out = False
 sample_results = [
     {
         # data point 1:
@@ -123,8 +123,11 @@ def query_openai(prompt, max_retries=5):
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0  # Use 0 temperature for more consistent results
             )
-            print("success!")
-            return response.choices[0].message.content
+            output = response.choices[0].message.content
+            print(f"success! Output saved as {type(output)} (should be string). Output: \n", file=sys.stderr)
+            print(output, file=sys.stderr)
+            return output
+            
         
         except not isinstance(response.choices[0].message.content, list):
             # Handle cases where OpenAI's response isn't valid list
@@ -155,6 +158,7 @@ def query_openai(prompt, max_retries=5):
     # If we've exhausted all retries, return an error response
     return [{"code": "Error: Max retries exceeded", "paragraph_id": "", "quoted_evidence": "", "opposition_or_support": ""}]
 
+
 # ############# Calling OpenAI API #############
 # Construct prompt:
 prompt = f"""
@@ -176,17 +180,49 @@ Please reply with a list of JSON objects that includes the following keys exactl
 
 Reply only with a Python-style list of JSON objects. 
 Do not include backslashes, newline characters (\n), 
-or wrap the output in a string. I want the raw list, not its string representation.
+or wrap the output in a string. 
+Do not include the json keyword.
+I want the raw list, not its string representation.
+
+example output: {sample_results}
 """
 
 # Call OpenAI API with the constructed prompt
-results = query_openai(prompt)
 
-print(f"OpenAI returned the following: {results}", file=sys.stderr) 
+# Pipeline runs correctly when we return a hardcoded list of JSONs. 
+# Thus, We MUST return a list of JSONs in our real output.
+# Check that this is the case!
 
-sys.stdout.write(json.dumps(results))
+ChatCompletion_object = query_openai(prompt)
+output_as_string = ChatCompletion_object #.choices[0].message.content
+output_as_string = output_as_string.strip().replace("\n", "").replace("json", "")
 
-logging.info(f"Processing for {article_title} completed.")
+print(f"OpenAI returned the following: {output_as_string}", file=sys.stderr) 
+
+
+try:
+    import ast
+    parsed_data = ast.literal_eval(output_as_string)
+    
+    # openai sometimes returns list of dicts instead of list of json (ie keys & entries in each object are in single quotes); check that it is one of the two.
+    assert isinstance(parsed_data, list), "Expected list or dict from OpenAI"
+    assert isinstance(parsed_data[0], dict), "Expected list or dict from OpenAI"
+    # parse possible dict:
+    json_output = json.dumps(parsed_data)
+    sys.stdout.write(json_output)
+    logging.info("Successfully parsed and output JSON")
+
+
+    # # Convert string to Python object (list of dicts, likely)
+    # output_as_json = json.loads(output_as_string)
+
+    # # Output clean JSON to stdout for downstream usage
+    # sys.stdout.write(json.dumps(output_as_json))
+    # logging.info(f"Processing for {article_title} completed.")
+except json.JSONDecodeError as e:
+    logging.error(f"JSON decode error: {e}")
+    sys.stderr.write("FAILED TO PARSE JSON\n")
+    sys.stdout.write("[]")  # or raise an error / return empty result
 
 
 # ChatCompletion(id='chatcmpl-BY1xQcwHTmr0kb1iJeV9Dtl6X9jBp', choices=[Choice(finish_reason='stop', index=0, logprobs=None, 
