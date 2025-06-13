@@ -6,10 +6,10 @@ import json
 ## Input is PDF path, output is JSON object of plaintext articles.
 ## To make sure dependencies work, run this script in the venv!     command: source .venv/bin/activate
 
-## sample command:
+## Test command:
 ## python3 extract_txt_from_newsbankpdf.py "/Users/rnzha/Documents/RESL_lab/Data_newspapers_sample/bear creek/NewsBank Multiple Articles (35).pdf"
 
-# We store articles in a working dictionary where title = article name and text = article content.
+# We store articles during intermediate processing in a dictionary where key = article name and value = article content.
 title_text_dict = {}
 
 ## Take in PDF path ##
@@ -44,10 +44,3 @@ for page in doc:
 
 output_json = json.dumps(title_text_dict, indent=4)
 print(output_json)
-# print("HERE WE GO \n \n \n")
-# print(peek)
-# print(peek.split("OpenURL Link", maxsplit=1)[1].strip())
-
-# oh, it's because we hv 2 instances of openurl link
-
-
