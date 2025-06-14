@@ -1,5 +1,3 @@
-Codebook:
-
 Metadata:
 * Information OTHER than the content of the article - such as title, date written, copyright, citations.
 ________________

@@ -6,9 +6,9 @@
 
 - script 3 intakes 1 article and outputs the same article, segmented by theme using OpenAI prompting. (Format: JSON of theme, text)
 
-** prompting notes: **
+**Prompting notes:**
 Our prompt gives the themes, without providing examples (originally lengthy); this makes the prompt more succinct & thus more cost-effective and easier for ChatGPT to parse without getting lost in the weeds. We fine-tune our model by giving it examples of human-coded articles.
 
-** design notes: ** 
+**Design notes:** 
 - Our final output is a CSV, but we use JSON as an intermediate object so I don't have to wrangle with commas within the article text. 
 - Having a pipeline of inputs / outputs like such makes it easy to modularize troubleshooting.
