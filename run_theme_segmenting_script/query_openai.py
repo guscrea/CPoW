@@ -67,6 +67,10 @@ client = OpenAI(api_key=api_key)
 
 # Function to query OpenAI & handle errors:
 def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
+    ''' Outputs string representation of list-of-JSONs upon success;
+     outputs string starting with "ERROR:" upon failure. 
+    (fields of each JSON: [theme], [relevant segment of text]) 
+    '''
 
     for attempt in range(max_retries):
         try:
@@ -76,9 +80,9 @@ def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0  # Use 0 temperature for more consistent results
             )
+            # Retrieve output as string:
             output = response.choices[0].message.content
-            print(f"Output: \n", file=sys.stderr)
-            print(output, file=sys.stderr)
+            logging.info(f"OpenAI's putput as string: \n {output} \n")
             return output
         except Exception as e:
             if "Rate limit" in str(e):
@@ -91,13 +95,29 @@ def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
                 # Handles other errors by logging them in theme column w/ full article text
                 logging.warning(f"Error message from OpenAI: {str(e)}")
                 return {f"Error: {str(e)}": article_text} 
-            # TODO: Check that JSON format is correct.
 
 
 ### Finally: Call OpenAI with our prompt ###
-ChatCompletion_object = query_openai()
-cleaned_output = ChatCompletion_object # uncleaned!
-logging.info(f"OpenAI's response: {ChatCompletion_object}")
+# (This should be a string, as our querying function outputs the "message" field from the ChatCompletion object)
+output_string = query_openai()
+logging.info(f"OpenAI's response, which should be a string: {output_string}")
+
+# Format the output as JSON, w/ consistent error formatting:
+if "error:" in output_string.lower()[:100]:
+     print({
+          f"Received the following error string instead of JSON: {output_string}":article_text
+          })
+else:
+    try:
+        cleaned_output_string = output_string.strip().replace("\n", "").replace("json", "")
+        print(
+             json.dumps(cleaned_output_string))
+    except:
+         print(
+     print({
+          f"Unexpected output: {output_string}":article_text
+          })              
+         )
 
 # TODO: clean the above as necessary - we should return a string representing a JSON, which we jsondump into an actual json.
 # make error checking as minimal as possible - just put it in the right places.
