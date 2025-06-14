@@ -1,0 +1,94 @@
+Codebook:
+
+Metadata:
+* Information OTHER than the content of the article - such as title, date written, copyright, citations.
+________________
+
+Economy: 
+* Discusses the impacts the windmills will have on the economy. This includes discussion about taxes, financial reasons, tourism, rising/falling energy costs affecting families etc. 
+* Note: discussions of property value alone do not count for the economy code 
+ 
+________________
+
+Future and/or Character of the Community: 
+* Discusses the concern the windmills would have on the community and what it means for the future 
+* Note: Can overlap with scenic beauty but only when scenic beauty and aesthetics are explicitly mentioned. 
+ 
+________________
+Public  Health: 
+* Discusses the impacts the turbines can have on their health, this includes discussing its dangers and how it relates to the public, light as a disturbance, and pollution. 
+* Direct or indirect impact on somebody’s health (e.g. I can’t sleep because of XYZ).
+* Note: This will often overlap with noise when noise is discussed in terms of impacts on human health and well-being (e.g ability to sleep). 
+* Note: Will overlap with economy where health impacts have implications to them to perform their work 
+ 
+________________
+
+Infrastructure:  
+* Discusses how the creation of the wind turbines would destroy roads/infrastructure (or build new roads that might destroy other things such as plants etc.) This can also include altering shipping channels/routes of commerce.
+
+
+ 
+________________
+ 
+Legality and Property Rights 
+* Discuss the legality of the wind turbines. This includes any quotes about zoning, community codes, or property rights. This includes discussion of loss of ability or capacity to act freely on one’s property (see, e.g., quote starting with “Jan Murgittroyd,” below.
+ 
+________________
+
+Noise: 
+* Discusses the noise of wind turbine construction or operation.
+* Generally, this will overlap with public health. This means you can use both codes → except when noise is discussed without any reference to human health or well-being
+ 
+________________
+Partisan Parties: 
+* Direct or indirect references to major party leaders or political parties in support/opposition to wind projects 
+* Any kind of reference to who/how regarding political parties. 
+
+________________
+Property Value:
+* Discusses the property value in a negative or positive way. 
+* If there is only a discussion about Property Values → does not count for the economy code unless other references to economic matters (see “Economy” code).
+ 
+________________
+
+Scenic Beauty:
+* Describes that the windmills will destroy the views/beauty of the land or seascape. This includes discussing the aesthetic.
+* Must refer to specific concerns about aesthetic and beauty, and not vague concerns of quality or character of a place. (See future and/or character of the community code) 
+ 
+________________
+
+
+Sustainability and Climate Issues: 
+* Discusses energy independence and or impacts on climate. This also includes any concern that standard or renewable energy sources might not be sufficient in guaranteeing energy supply.
+* This also captures the link between wind turbines and reducing carbon emission and emphasizes the concepts of renewable energy 
+* Discusses the impact of wind farms on sustainable practices and the environment (positively or negatively) 
+* Includes concerns about reliability (e.g.: wind is unreliable)
+* Discusses the impact of wind farms on Global Weather Patterns and impacts wind turbines have on the environment 
+ 
+________________
+Technological Skepticism/ Optimism 
+* Discussions of the reliability of technological feasibility of wind turbines 
+ 
+________________
+Threat to Wildlife: 
+* Discusses a threat to animals or plants. 
+ 
+________________
+Tribes: 
+* Explicitly mentions tribes   
+
+
+Examples: 
+* The tribe believes the turbines stand atop ancient burial grounds. They also say the structures violate their religious teachings, which hold the horizon as a sacred meeting place of heaven and earth.
+* They still worship the horizon in special, sunrise ceremonies. The turbines have ruined those gatherings, they said. 
+
+________________
+General support:
+* Mentions supportive sentiments towards wind energy development OR resources (monetary or otherwise) put towards such development.
+
+__________________
+General opposition: 
+* Mentions general discontent and/or anger regarding something related to offshore wind. Does not raise any key issues explicitly. 
+
+_________________
+
