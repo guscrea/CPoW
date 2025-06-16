@@ -9,7 +9,7 @@ Economy:
 ________________
 
 Future and/or Character of the Community: 
-* Discusses the concern the windmills would have on the community and what it means for the future 
+* Discusses the impacts the windmills would have on the community and what it means for the future 
 * Note: Can overlap with scenic beauty but only when scenic beauty and aesthetics are explicitly mentioned. 
  
 ________________
@@ -24,12 +24,10 @@ ________________
 Infrastructure:  
 * Discusses how the creation of the wind turbines would destroy roads/infrastructure (or build new roads that might destroy other things such as plants etc.) This can also include altering shipping channels/routes of commerce.
 
-
- 
 ________________
  
 Legality and Property Rights 
-* Discuss the legality of the wind turbines. This includes any quotes about zoning, community codes, or property rights. This includes discussion of loss of ability or capacity to act freely on one’s property (see, e.g., quote starting with “Jan Murgittroyd,” below.
+* Discuss the legality of the wind turbines. This includes any quotes about zoning, community codes, or property rights. This includes discussion of loss of ability or capacity to act freely on one’s property.
  
 ________________
 
@@ -50,7 +48,7 @@ Property Value:
 ________________
 
 Scenic Beauty:
-* Describes that the windmills will destroy the views/beauty of the land or seascape. This includes discussing the aesthetic.
+* Describes that the windmills will impact the views/beauty of the land or seascape. This includes discussing the aesthetic.
 * Must refer to specific concerns about aesthetic and beauty, and not vague concerns of quality or character of a place. (See future and/or character of the community code) 
  
 ________________
@@ -69,12 +67,11 @@ Technological Skepticism/ Optimism
  
 ________________
 Threat to Wildlife: 
-* Discusses a threat to animals or plants. 
+* Discusses windmills in relation to animals or plants. 
  
 ________________
 Tribes: 
 * Explicitly mentions tribes   
-
 
 Examples: 
 * The tribe believes the turbines stand atop ancient burial grounds. They also say the structures violate their religious teachings, which hold the horizon as a sacred meeting place of heaven and earth.

@@ -1,0 +1,43 @@
+// PROMPT USED:
+
+// You are given an article about a wind energy development project that has received some amount of opposition.
+
+// Your job is to segment the given article by theme, according to the given codebook. The codebook text is given after this prompt, & the article text is given after the codebook.
+
+// Reply ONLY with a JSON object with theme as first column & associated text as second column. IMPORTANT: please make sure your response contains ALL the text in the article - not a single word should be ommitted.
+
+// If an error occurs that prevents these instructions from being followed, please respond NOT with a JSON object, but with a string starting with "ERROR:" and consisting of a 1-sentence error message. 
+
+// ------ CODEBOOK: -----
+// {codebook - Ran added "metadata" & "neutral"}
+
+// See the current neutral entry:
+// Neutral:
+// * Does NOT contain information about local sentiments (either positive or negative) towards wind energy (i.e. windmills or planned development).
+
+// ------ END OF CODEBOOK ----
+
+
+// ----- ARTICLE: -----
+// {article_text}
+// ----- END OF ARTICLE -----
+// """
+
+[
+    {
+        "theme": "Sustainability and Climate Issues",
+        "text": "\"And thrive they have, a low, sprawling counterpoint to the gigantic alien-looking wind turbines that make up the Bear Creek Wind Farm at the very top of Bald Mountain in Bear Creek Township. A unique combination of the natural — and a view of technology that harnesses the natural to provide clean energy — greeted trekkers on a recent hike of Bald Mountain, a unique nature preserve.\""
+    },
+    {
+        "theme": "Neutral",
+        "text": "\"The hillside preserve stretches from Bear Creek Camp to near the top of the mountain, where the privately owned Bear Creek turbines spin, and which is privately owned and not open to hikers or sightseers. But looking at the turbines even from a distance makes you realize just how massive these whirring sentinels are. Seventeen hardy souls took on the three-mile hike that was sponsored by the North Branch Land Trust, which is helping to keep Bald Mountain pristine by preserving a large tract of it. Starting in 2011, NBLT worked with the landowners and others to preserve the property. They secured funding for the purchase from a Pennsylvania Department of Conservation and Natural Resources Program Grant and in 2013 the 385-acre Bald Mountain Preserve on the East Mountain came into being. \"North Branch Land Trust conserved a 385-acre portion of Bald Mountain in 2013 and transferred the property to Natural Lands Trust that same year,\" said Paul Lumia, NBLT Executive Director. \"Bald Mountain is a unique natural area in that it straddles two significate watersheds, the Delaware watershed to the east and the Susquehanna watershed to the west. The mountain also harbors a globally rare scrub oak barrens habitat that is invaluable to wildlife at local and landscape scales.\" So now, Lumia said, \"When you're driving on the Cross-Valley Expressway and you look up at the windmills, you know all that property below the windmills is protected.\" The rugged terrain of this mountain is largely forested. Dominant species include red oak, white oak and red maple. Two state-designated \"high quality\" streams flow through the property, bordered by native hemlocks and aspens. And the trail abuts a large glacial bog that is home to several rare and carnivorous plants. Wildlife abounds, from the chattering of migratory songbirds — such as scarlet tanagers, Eastern towhees and hermit thrushes — to black bears, bald eagles and the red eft (salamander) that charmed folks on Sunday. The walk left hikers feeling inspired. Sue Lenahan of Penn Lake said that \"it's very exciting to have opportunities to explore wonderful new places like this. I'm very happy NBLT is sponsoring these hikes.\" \"Today was a reminder of how fortunate we are to live in this area,\" said Debb Krysicki, also of Penn Lake. \"The hike with good people and company, the size of the turbines and the picturesque view of the nearby towns in the distance provided a great experience.\""
+    },
+    {
+        "theme": "Threat to Wildlife",
+        "text": "\"The mountain also harbors a globally rare scrub oak barrens habitat that is invaluable to wildlife at local and landscape scales.\""
+    },
+    {
+        "theme": "Metadata",
+        "text": "October 1, 2017 | Citizen's Voice, The & Sunday Voice (Wilkes-Barre, PA) Section: Sports  555 Words OpenURL Link"
+    }
+]

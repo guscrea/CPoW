@@ -1,7 +1,6 @@
 # TODO: clean imports formatting.
 import random # for handling rate limiting 
 import time # for handling rate limiting
-import csv # for writing into CSV
 import json # for handling JSON data
 import argparse # to take in args
 import logging # to log errors
@@ -10,9 +9,12 @@ from dotenv import load_dotenv # for saving OpenAI key locally
 import sys  # for outputting error msgs & results to stdout
 import os # to access environment variables
 
-## NOTES: ##
-# script intakes 1 article and outputs the same article, segmented by theme using OpenAI prompting. (Format: CSV of theme, text)
+## DOC: ##
+# This script intakes 1 article and outputs the same article, segmented by theme using OpenAI prompting. (Format: CSV of theme, text)
 # if OpenAI prompting errors, script outputs 1-line CSV of "QUERYING ERROR [optional explanation]" and original text.
+
+# To try running it:
+# python3 query_openai.py "$(cat testing/sample_article.txt)" > querying_test_output.json
 
 # Set up logging to track the program's execution
 # This will help us understand what's happening and debug any issues
@@ -27,10 +29,10 @@ logging.basicConfig(
 parser = argparse.ArgumentParser(description = "The given article is segmented by theme according to our codebook.")
 parser.add_argument("article_text", type=str)
 args = parser.parse_args()
-article_text = args[0]
+article_text = args.article_text
 
 # Reading codebook: 
-with open('themes_examples_removed.txt') as f:
+with open('codebook_examples_removed_neutral_removed.txt') as f:
     codebook = f.readlines()
     f.close()
 
@@ -40,9 +42,13 @@ for str in codebook: # turning list of strings to string.
 codebook = acc
 
 # Our prompt:
-our_prompt = f"""Segment the given article by theme, according to the given codebook. The codebook text is given after this prompt, & the article text is given after the codebook.
 
-Reply ONLY with a JSON object with theme as first column & associated text as second column. The order of text should not be changed, and no text should be ommitted.
+our_prompt = f"""
+You are given an article about a wind energy development project that has received some amount of opposition.
+
+Your job is to segment the given article by theme, according to the given codebook. The codebook text is given after this prompt, & the article text is given after the codebook.
+
+Reply ONLY with a JSON object with theme as first column & associated text as second column. IMPORTANT: please make sure your response contains ALL the text in the article - not a single word should be ommitted.
 
 If an error occurs that prevents these instructions from being followed, please respond NOT with a JSON object, but with a string starting with "ERROR:" and consisting of a 1-sentence error message. 
 
@@ -67,7 +73,7 @@ client = OpenAI(api_key=api_key)
 
 # Function to query OpenAI & handle errors:
 def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
-    ''' Outputs string representation of list-of-JSONs upon success;
+    ''' Outputs string representation of a JSON array upon success;
      outputs string starting with "ERROR:" upon failure. 
     (fields of each JSON: [theme], [relevant segment of text]) 
     '''
@@ -82,7 +88,7 @@ def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
             )
             # Retrieve output as string:
             output = response.choices[0].message.content
-            logging.info(f"OpenAI's putput as string: \n {output} \n")
+            logging.info(f"OpenAI's output as string: \n {output} \n")
             return output
         except Exception as e:
             if "Rate limit" in str(e):
@@ -98,27 +104,28 @@ def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
 
 
 ### Finally: Call OpenAI with our prompt ###
-# (This should be a string, as our querying function outputs the "message" field from the ChatCompletion object)
+# (output should be a string, as our querying function outputs the "message" field from the ChatCompletion object)
 output_string = query_openai()
 logging.info(f"OpenAI's response, which should be a string: {output_string}")
 
-# Format the output as JSON, w/ consistent error formatting:
+# Format the output as JSON array, w/ consistent error formatting:
 if "error:" in output_string.lower()[:100]:
+     logging.error("OpenAI's output contained ERROR - program assumes it is an error message.")
      print({
           f"Received the following error string instead of JSON: {output_string}":article_text
           })
 else:
     try:
-        cleaned_output_string = output_string.strip().replace("\n", "").replace("json", "")
-        print(
-             json.dumps(cleaned_output_string))
+        cleaned_output_string = output_string.strip().replace("\n", "").replace("json", "").replace("```", "")
+        json.dumps(cleaned_output_string)
+        logging.info("Output is parsable by json.dumps - it should be a working JSON.")
+
     except:
          print(
-     print({
-          f"Unexpected output: {output_string}":article_text
-          })              
-         )
+              {f"Wholly unexpected output: {output_string}":article_text})
+         logging.info("OpenAI's output was neither a recognized error message or a correct output.")
+         
 
-# TODO: clean the above as necessary - we should return a string representing a JSON, which we jsondump into an actual json.
+# TODO: clean the above as necessary - we should return a string representing a JSON array, which we jsondump into an actual json array.
 # make error checking as minimal as possible - just put it in the right places.
 
