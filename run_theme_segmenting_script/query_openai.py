@@ -117,7 +117,8 @@ if "error:" in output_string.lower()[:100]:
 else:
     try:
         cleaned_output_string = output_string.strip().replace("\n", "").replace("json", "").replace("```", "")
-        json.dumps(cleaned_output_string)
+        json_output = json.dumps(cleaned_output_string)
+         sys.stdout.write(json_output)
         logging.info("Output is parsable by json.dumps - it should be a working JSON.")
 
     except:
