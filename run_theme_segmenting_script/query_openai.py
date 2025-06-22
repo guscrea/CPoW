@@ -32,7 +32,7 @@ args = parser.parse_args()
 article_text = args.article_text
 
 # Reading codebook: 
-with open('codebook_examples_removed_neutral_removed.txt') as f:
+with open('codebook_examples_removed.txt') as f:
     codebook = f.readlines()
     f.close()
 
@@ -46,9 +46,14 @@ codebook = acc
 our_prompt = f"""
 You are given an article about a wind energy development project that has received some amount of opposition.
 
-Your job is to segment the given article by theme, according to the given codebook. The codebook text is given after this prompt, & the article text is given after the codebook.
+Your job is to segment the given article by theme(s), according to the given codebook. The codebook text is given after this prompt, & the article text is given after the codebook.
 
-Reply ONLY with a JSON object with theme as first column & associated text as second column. IMPORTANT: please make sure your response contains ALL the text in the article - not a single word should be ommitted.
+Reply ONLY with a JSON object with 4 columns: 
+1. All the themes that apply to the passage 
+2. Associated text 
+3. Boolean that is TRUE when the passage DIRECTLY refers to the wind turbines or planned development in question.
+
+The segments can overlap, but please make sure your response contains ALL the text in the article - not a single word should be ommitted.
 
 If an error occurs that prevents these instructions from being followed, please respond NOT with a JSON object, but with a string starting with "ERROR:" and consisting of a 1-sentence error message. 
 
@@ -75,7 +80,7 @@ client = OpenAI(api_key=api_key)
 def query_openai(prompt=our_prompt, retry_delay=2, max_retries=5):
     ''' Outputs string representation of a JSON array upon success;
      outputs string starting with "ERROR:" upon failure. 
-    (fields of each JSON: [theme], [relevant segment of text]) 
+    (fields of each JSON: [theme], [relevant segment of text], [is windmill mentioned explicitly?]) 
     '''
 
     for attempt in range(max_retries):
@@ -118,7 +123,7 @@ else:
     try:
         cleaned_output_string = output_string.strip().replace("\n", "").replace("json", "").replace("```", "")
         json_output = json.dumps(cleaned_output_string)
-         sys.stdout.write(json_output)
+        sys.stdout.write(json_output)
         logging.info("Output is parsable by json.dumps - it should be a working JSON.")
 
     except:

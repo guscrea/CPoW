@@ -1,7 +1,4 @@
 ________________
-Neutral:
-* Does NOT contain information about local sentiments (either positive or negative) towards wind energy (i.e. windmills or planned development).
-________________
 Metadata:
 * Information OTHER than the content of the article - such as title, date written, copyright, citations.
 ________________
@@ -17,7 +14,7 @@ Future and/or Character of the Community:
 * Note: Can overlap with scenic beauty but only when scenic beauty and aesthetics are explicitly mentioned. 
  
 ________________
-Public  Health: 
+Public Health: 
 * Discusses the impacts the turbines can have on their health, this includes discussing its dangers and how it relates to the public, light as a disturbance, and pollution. 
 * Direct or indirect impact on somebody’s health (e.g. I can’t sleep because of XYZ).
 * Note: This will often overlap with noise when noise is discussed in terms of impacts on human health and well-being (e.g ability to sleep). 
@@ -28,12 +25,10 @@ ________________
 Infrastructure:  
 * Discusses how the creation of the wind turbines would destroy roads/infrastructure (or build new roads that might destroy other things such as plants etc.) This can also include altering shipping channels/routes of commerce.
 
-
- 
 ________________
  
 Legality and Property Rights 
-* Discuss the legality of the wind turbines. This includes any quotes about zoning, community codes, or property rights. This includes discussion of loss of ability or capacity to act freely on one’s property (see, e.g., quote starting with “Jan Murgittroyd,” below.
+* Discuss the legality of the wind turbines. This includes any quotes about zoning, community codes, or property rights. This includes discussion of loss of ability or capacity to act freely on one’s property.
  
 ________________
 
@@ -72,13 +67,12 @@ Technological Skepticism/ Optimism
 * Discussions of the reliability of technological feasibility of wind turbines 
  
 ________________
-Threat to Wildlife: 
+Wildlife: 
 * Discusses windmills in relation to animals or plants. 
  
 ________________
 Tribes: 
 * Explicitly mentions tribes   
-
 
 Examples: 
 * The tribe believes the turbines stand atop ancient burial grounds. They also say the structures violate their religious teachings, which hold the horizon as a sacred meeting place of heaven and earth.
