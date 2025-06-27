@@ -48,8 +48,8 @@ Property Value:
  
 ________________
 
-Scenic Beauty:
-* Describes that the windmills will destroy the views/beauty of the land or seascape. This includes discussing the aesthetic.
+Aesthetic considerations:
+* Describes that the windmills will impact the views/beauty of the land or seascape. This includes discussing the aesthetic.
 * Must refer to specific concerns about aesthetic and beauty, and not vague concerns of quality or character of a place. (See future and/or character of the community code) 
  
 ________________
@@ -77,14 +77,3 @@ Tribes:
 Examples: 
 * The tribe believes the turbines stand atop ancient burial grounds. They also say the structures violate their religious teachings, which hold the horizon as a sacred meeting place of heaven and earth.
 * They still worship the horizon in special, sunrise ceremonies. The turbines have ruined those gatherings, they said. 
-
-________________
-General support:
-* Mentions supportive sentiments towards wind energy development OR resources (monetary or otherwise) put towards such development.
-
-__________________
-General opposition: 
-* Mentions general discontent and/or anger regarding something related to offshore wind. Does not raise any key issues explicitly. 
-
-_________________
-
