@@ -39,16 +39,12 @@ def import_spreadsheet(url: str,
     ''' Import taxonomy spreadsheet as an array, only keeping meaningful columns (i.e. those in column_indices.) '''
     return []
 
-# TODO: turn spreadsheet into tree
+# TODO: turn taxonomy spreadsheet into taxonomy tree.
 def array_to_tree(arr: list[list]) -> Tree:
     '''Turns our array of claim entries into a tree of L1: Superclaim, L2: Subclaim, L3 (optional): Subsubclaim'''
     # TODO: add an option to visually render tree.
 
-# TODO: Function turning tree into Langchain graph
-def tree_to_langgraph(tree) -> StateGraph:
-    '''Turns our taxonomy tree to a Langchain Graph: '''
-
-# TODO: call the Langchain graph
+# 
 
 # Figure out:
 # - spreadsheet API
