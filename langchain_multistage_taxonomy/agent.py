@@ -52,9 +52,6 @@ graph = workflow.compile()
 
 
 
-
-
-
 # class sybilles_agent:
 #     def __init__(self, model, tools, checkpointer, system=''):
 #         self.system = system
@@ -78,12 +75,12 @@ graph = workflow.compile()
 #         result = state['messages'][-1]
 #         return len(result.tool_calls) > 0
     
-#     def call_ollama(self, state: AgentState):
-#         messages = state['messages']
-#         if self.system:
-#             messages = [SystemMessage(content=self.system)] + messages
-#         message = self.model.invoke(messages)
-#         return {'messages': [message]}
+    def call_ollama(self, state: AgentState):
+        messages = state['messages']
+        if self.system:
+            messages = [SystemMessage(content=self.system)] + messages
+        message = self.model.invoke(messages)
+        return {'messages': [message]}
     
 #     def take_action(self, state: AgentState):
 #         tool_calls = state['messages'][-1].tool_calls
