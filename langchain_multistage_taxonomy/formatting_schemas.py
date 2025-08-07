@@ -6,6 +6,10 @@ from typing import Dict
 
 class SuperclaimResponse(BaseModel):
     claims: Dict[str, str] = Field(
-        ..., 
         description="A dictionary mapping each superclaim to its corresponding article segment"
-    )
+        )
+
+class SubclaimResponse(BaseModel):
+    claims: Dict[str, str] = Field(
+        description="A dictionary mapping each superclaim to its corresponding article segment"
+        )
