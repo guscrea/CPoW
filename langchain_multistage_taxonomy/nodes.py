@@ -16,24 +16,26 @@ from pydantic import BaseModel, Field
 api_key = os.getenv("OPENAI_API_KEY") #TODO: use this.
 
 # Node definitions:
-def seg_by_superclaim(state: OverallState, article_string): 
+def seg_by_superclaim(state: OverallState, article_string) -> SuperclaimResponse: 
     "Give AI entire article text to segment by theme; AI emits a stream of JSONs of {text segment, metaclaim}."
-
+    # import prompt & model:
     prompt = superclaim_prompt.format(input=article_string) #TODO: codebook for metaclaims (highest level) isn't imported yet; implement a way.
-    model = ChatOpenAI(model="gpt-4o", temperature=0)
-    
-    # Bind schema to model
-    schema = SuperclaimResponse # dictionary of superclaim, text
-    model_with_tools = model.bind_tools([SuperclaimResponse])
-    response = model_with_tools.invoke(superclaim_prompt)
-    # get this as a dict.
-    # send elements of list as JSONs
+    model = ChatOpenAI(model="gpt-4o", temperature=0)    
+
+    # Ensure that return type is of SuperclaimResponse (a dict of superclaim & text)
+    model_structured = model.with_structured_output(SuperclaimResponse)
+    response = model_structured.invoke(prompt)
+    if not isinstance(response, SuperclaimResponse):
+        raise TypeError("Expected SuperclaimResponse")
+        # TODO: add detailed error logging here.
+    return response
 
 # Mapping logic:
 def emit_segments(OverallState):
     """ each dict entry in OverallState["article_segments"] (i.e. segment & claim) is sent to seg_by_subclaims."""
     return [Send("seg_by_subclaims", {article_segment, claims_list}) 
             for article_segment, claims_list in OverallState["article_segments"]]
+
 
 def seg_by_subclaims(state: SegmentState): # TODO: figure out output
     "Give AI a JSON of {text segment, 1 metaclaim wrapped in list}. AI evaluates list of child claims & selects appropriate subclaim - & subsubclaim, if relevant. Claims are appended in order to our list."

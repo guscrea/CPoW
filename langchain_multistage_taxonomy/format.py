@@ -2,15 +2,25 @@
 from pydantic import BaseModel, Field
 from typing import TypedDict, List, Dict
 
-article_segment = str
-ClaimsList = List[str] # a list of claims structured [superclaim, subclaim, subsubclaim] 
-
 ###### template for states: ######
+
+# Base types
+ArticleSegment = str
+ClaimsList = List[str]  # [superclaim, subclaim, subsubclaim]
+RelevanceScore = float
+SentimentScore = float
+
+# Each segment of the article with metadata
+class SegmentData(BaseModel):
+    segment: ArticleSegment
+    claims: ClaimsList
+    relevance: RelevanceScore
+    sentiment: SentimentScore
 
 # overall state passed in and out of graph:
 class OverallState(TypedDict):
     article_str: str # the entire article, passed as input.
-    article_segments: dict[article_segment, ClaimsList] 
+    article_segments: List[SegmentData]
 
 # State of each text segment, passed seperately through intermediate nodes, to join at graph's end:
 class SegmentState(TypedDict):
