@@ -1,7 +1,8 @@
-#to fetch API keys:
-import os
-from dotenv import load_dotenv 
+from format import SuperclaimResponse, SubclaimResponse
 
+# to fetch API keys:
+import os 
+from dotenv import load_dotenv 
 from agent import OverallState, SegmentState
 from prompts import superclaim_prompt, subclaim_prompt
 
@@ -13,22 +14,16 @@ from pydantic import BaseModel, Field
 # initialize AI model
 api_key = os.getenv("OPENAI_API_KEY") #TODO: use this.
 
-class ResponseFormatter(BaseModel):
-    """Always use this tool to structure your response to the user."""
-    answer: str = Field(description="The answer to the user's question")
-
 # Node definitions:
-def seg_by_superclaim(state: OverallState): 
+def seg_by_superclaim(state: OverallState, article_string): 
     "Give AI entire article text to segment by theme; AI emits a stream of JSONs of {text segment, metaclaim}."
 
-    prompt = superclaim_prompt
-    #TODO: add following vars / .format(input=state["article_str"], definitions=superclaim_definitions)
-
+    prompt = superclaim_prompt.format(input=article_string) #TODO: codebook for metaclaims (highest level) isn't imported yet; implement a way.
     model = ChatOpenAI(model="gpt-4o", temperature=0)
     
     # Bind schema to model
-    schema = dictionary of superclaim, text
-    model_with_tools = model.bind_tools([ResponseFormatter])
+    schema = SuperclaimResponse # dictionary of superclaim, text
+    model_with_tools = model.bind_tools([SuperclaimResponse])
     response = model_with_tools.invoke(superclaim_prompt)
     # get this as a dict.
     # send elements of list as JSONs
