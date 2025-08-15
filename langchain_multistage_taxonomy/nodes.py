@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from agent import OverallState, SegmentState
 from prompts import superclaim_prompt, subclaim_prompt
 
-# for calling LLMs & abstracting LLM input / output logic:
+# for abstracting LLM input / output logic:
+from langgraph.types import Send # for emitting units of data in MapReduce framework.
 from langchain_openai import ChatOpenAI
 from openai import OpenAI 
 from pydantic import BaseModel, Field 
@@ -27,6 +28,12 @@ def seg_by_superclaim(state: OverallState, article_string):
     response = model_with_tools.invoke(superclaim_prompt)
     # get this as a dict.
     # send elements of list as JSONs
+
+# Mapping logic:
+def emit_segments(OverallState):
+    """ each dict entry in OverallState["article_segments"] (i.e. segment & claim) is sent to seg_by_subclaims."""
+    return [Send("seg_by_subclaims", {article_segment, claims_list}) 
+            for article_segment, claims_list in OverallState["article_segments"]]
 
 def seg_by_subclaims(state: SegmentState): # TODO: figure out output
     "Give AI a JSON of {text segment, 1 metaclaim wrapped in list}. AI evaluates list of child claims & selects appropriate subclaim - & subsubclaim, if relevant. Claims are appended in order to our list."
