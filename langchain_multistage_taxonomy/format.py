@@ -10,24 +10,17 @@ ClaimsList = List[str]  # [superclaim, subclaim, subsubclaim]
 RelevanceScore = float
 SentimentScore = float
 
-# Each segment of the article with metadata
-class SegmentData(BaseModel):
+# overall state passed in and out of graph:
+class OverallState(TypedDict):
+    article_str: str # the entire article, passed as input.
+    article_segments: List[SegmentState]
+
+# State of each text segment, passed seperately through intermediate nodes, to join at graph's end:
+class SegmentState(TypedDict):
     segment: ArticleSegment
     claims: ClaimsList
     relevance: RelevanceScore
     sentiment: SentimentScore
-
-# overall state passed in and out of graph:
-class OverallState(TypedDict):
-    article_str: str # the entire article, passed as input.
-    article_segments: List[SegmentData]
-
-# State of each text segment, passed seperately through intermediate nodes, to join at graph's end:
-class SegmentState(TypedDict):
-    segment_str: str 
-    ClaimsList: List[str] 
-
-
 
 ##### template for schemas: #####
 
