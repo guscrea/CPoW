@@ -45,14 +45,18 @@ def emit_segments(OverallState):
     return [Send("seg_by_subclaims", {article_segment, claims_list}) 
             for article_segment, claims_list in OverallState["article_segments"]]
 
-
 def seg_by_subclaims(state: SegmentState): # TODO: figure out output
-    "Give AI a JSON of {text segment, 1 metaclaim wrapped in list}. AI evaluates list of child claims & selects appropriate subclaim - & subsubclaim, if relevant. Claims are appended in order to our list."
+    "Give LLM a JSON of {text segment, 1 metaclaim wrapped in list}. AI evaluates list of child claims & selects appropriate subclaim - & subsubclaim, if relevant. Claims are appended in order to our list."
     # TODO: give AI a list of child subclaims connected to parent superclaim. AI chooses a subclaim, & then a sub-subclaim if relevant.
-    # TODO: AI then appends these child claims to the list of claims: list[str]
-    # TODO: use json mode.
-    return #{key, updated_val}
+    # TODO: AI then appends these child claims to state["ClaimsList"] 
+    # protocol for loading subclaims can be modular - Kevin fork?
+    return state
 
+def score_segment(state: SegmentState):
+    """ Use LLM to score a single segment according to modular logic; enter scores into corresponding fields in SegmentState"""
+    # TODO: define scoring logic; may require (1) custom prompt, define and import from prompt.py, (2) output validation - use SuperClaimResponse as reference
+    return state
+    
 def aggregate_jsons(state: SegmentState):
     "Node aggregates a stream of SegmentState & updates OverallState."
-    return {OverallState["article_segments"], ...} # TODO: one line of code aggregating segmentstates thru appending or overwriting list[...]
+    return {OverallState["article_segments"], ...} # TODO: one line of code aggregating segmentstates and outputting OverallState with updated information
