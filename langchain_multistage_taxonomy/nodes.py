@@ -28,7 +28,16 @@ def seg_by_superclaim(state: OverallState, article_string) -> SuperclaimResponse
     if not isinstance(response, SuperclaimResponse):
         raise TypeError("Expected SuperclaimResponse")
         # TODO: add detailed error logging here.
-    return response
+    for superclaim, text in response:
+        seg = SegmentState{
+            segment = text,
+            claims = [superclaim],
+            relevance = -99,
+            sentiment = -99 
+        # TODO: dummy vals aren't ideal, check if field accessing syntax is correct
+        }
+        state["segmentstate"] += seg
+    return state
 
 # Mapping logic:
 def emit_segments(OverallState):
