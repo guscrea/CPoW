@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv 
 from agent import OverallState, SegmentState
 from prompts import superclaim_prompt, subclaim_prompt
+from taxonomy_to_tree import dummy_taxonomy_tree
 
 # for abstracting LLM input / output logic:
 from langgraph.types import Send # for emitting units of data in MapReduce framework.
@@ -16,8 +17,8 @@ from pydantic import BaseModel, Field
 api_key = os.getenv("OPENAI_API_KEY") #TODO: use this.
 
 # Node definitions:
-def seg_by_superclaim(state: OverallState, article_string) -> SuperclaimResponse: 
-    "Give AI entire article text to segment by theme; AI emits a stream of JSONs of {text segment, metaclaim}."
+def seg_by_superclaim(state: OverallState, article_string) -> OverallState: 
+    "Give AI entire article text to segment by theme; AI updates state[article_segments] to comprise a list of segments, each with ONE parent claim attached."
     # import prompt & model:
     prompt = superclaim_prompt.format(input=article_string) #TODO: codebook for metaclaims (highest level) isn't imported yet; implement a way.
     model = ChatOpenAI(model="gpt-4o", temperature=0)    
@@ -29,14 +30,13 @@ def seg_by_superclaim(state: OverallState, article_string) -> SuperclaimResponse
         raise TypeError("Expected SuperclaimResponse")
         # TODO: add detailed error logging here.
     for superclaim, text in response:
-        seg = SegmentState{
-            segment = text,
-            claims = [superclaim],
-            relevance = -99,
-            sentiment = -99 
-        # TODO: dummy vals aren't ideal, check if field accessing syntax is correct
+        seg: SegmentState = {
+        "segment": text,
+        "claims": [superclaim],
+        "relevance": None,
+        "sentiment": None 
         }
-        state["segmentstate"] += seg
+        state["article_segments"].append(seg)
     return state
 
 # Mapping logic:
@@ -45,18 +45,21 @@ def emit_segments(OverallState):
     return [Send("seg_by_subclaims", {article_segment, claims_list}) 
             for article_segment, claims_list in OverallState["article_segments"]]
 
-def seg_by_subclaims(state: SegmentState): # TODO: figure out output
-    "Give LLM a JSON of {text segment, 1 metaclaim wrapped in list}. AI evaluates list of child claims & selects appropriate subclaim - & subsubclaim, if relevant. Claims are appended in order to our list."
-    # TODO: give AI a list of child subclaims connected to parent superclaim. AI chooses a subclaim, & then a sub-subclaim if relevant.
-    # TODO: AI then appends these child claims to state["ClaimsList"] 
-    # protocol for loading subclaims can be modular - Kevin fork?
+def seg_by_subclaims(state: SegmentState):
+    "For a SegmentState containing (1) article text and (2) a parent claim, works through tree of child claims, assigning a claim at each level to our segment until (1) the end of the tree is reached, or (2) no relevant claim is found. Claims are appended to state[claims_list]."
+    # TODO: complete!
+    tree = dummy_taxonomy_tree 
+    # hey Kevin! This is a dummy tree. docs: https://treelib.readthedocs.io/en/latest/
+    # there is support to turn the tree structure into json or dict, if needed - will leave implementation up to you!
+    # https://docs.google.com/spreadsheets/d/126K2wNkvVqveZiTTDPY67LvlHjvBojurj036fL2QJ2Q/edit?gid=0#gid=0 this is the document I referenced for the wind opposition claims. 
     return state
 
 def score_segment(state: SegmentState):
     """ Use LLM to score a single segment according to modular logic; enter scores into corresponding fields in SegmentState"""
     # TODO: define scoring logic; may require (1) custom prompt, define and import from prompt.py, (2) output validation - use SuperClaimResponse as reference
     return state
-    
+
 def aggregate_jsons(state: SegmentState):
     "Node aggregates a stream of SegmentState & updates OverallState."
-    return {OverallState["article_segments"], ...} # TODO: one line of code aggregating segmentstates and outputting OverallState with updated information
+    # TODO: update state[claims_list] to include new segments as they're emitted; these should replace old segments that don't yet have metadata. check mapreduce medium article linked in readme.
+    return state

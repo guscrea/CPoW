@@ -19,8 +19,8 @@ class OverallState(TypedDict):
 class SegmentState(TypedDict):
     segment: ArticleSegment
     claims: ClaimsList
-    relevance: RelevanceScore
-    sentiment: SentimentScore
+    relevance: RelevanceScore | None
+    sentiment: SentimentScore | None
 
 ##### template for schemas: #####
 
