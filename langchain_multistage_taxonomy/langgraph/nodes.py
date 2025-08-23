@@ -17,10 +17,10 @@ from pydantic import BaseModel, Field
 api_key = os.getenv("OPENAI_API_KEY") #TODO: use this.
 
 # Node definitions:
-def seg_by_superclaim(state: OverallState, article_string) -> OverallState: 
+def seg_by_superclaim(state: OverallState) -> OverallState: 
     "Give AI entire article text to segment by theme; AI updates state[article_segments] to comprise a list of segments, each with ONE parent claim attached."
     # import prompt & model:
-    prompt = superclaim_prompt.format(input=article_string) #TODO: codebook for metaclaims (highest level) isn't imported yet; implement a way.
+    prompt = superclaim_prompt
     model = ChatOpenAI(model="gpt-4o", temperature=0)    
 
     # Ensure that return type is of SuperclaimResponse (a dict of superclaim & text)
@@ -53,7 +53,7 @@ def seg_by_subclaims(state: SegmentState):
     # there is support to turn the tree structure into json or dict, if needed - will leave implementation up to you!
     # https://docs.google.com/spreadsheets/d/126K2wNkvVqveZiTTDPY67LvlHjvBojurj036fL2QJ2Q/edit?gid=0#gid=0 this is the document I referenced for the wind opposition claims. 
 
-    # in taxonomy_to_tree.py, run the script to visualize the tree!
+    # in taxonomy_to_tree.py, run the script to visualize the tree. Prompts are in the inputs file in prompts.py
     return state
 
 def score_segment(state: SegmentState):
