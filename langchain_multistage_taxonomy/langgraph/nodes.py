@@ -4,8 +4,8 @@ from format import SuperclaimResponse, SubclaimResponse
 import os 
 from dotenv import load_dotenv 
 from agent import OverallState, SegmentState
-from prompts import superclaim_prompt, subclaim_prompt
-from taxonomy_to_tree import dummy_taxonomy_tree
+from inputs.prompts import superclaim_prompt, subclaim_prompt
+from inputs.sample_tree import dummy_taxonomy_tree
 
 # for abstracting LLM input / output logic:
 from langgraph.types import Send # for emitting units of data in MapReduce framework.
@@ -52,6 +52,8 @@ def seg_by_subclaims(state: SegmentState):
     # hey Kevin! This is a dummy tree. docs: https://treelib.readthedocs.io/en/latest/
     # there is support to turn the tree structure into json or dict, if needed - will leave implementation up to you!
     # https://docs.google.com/spreadsheets/d/126K2wNkvVqveZiTTDPY67LvlHjvBojurj036fL2QJ2Q/edit?gid=0#gid=0 this is the document I referenced for the wind opposition claims. 
+
+    # in taxonomy_to_tree.py, run the script to visualize the tree!
     return state
 
 def score_segment(state: SegmentState):

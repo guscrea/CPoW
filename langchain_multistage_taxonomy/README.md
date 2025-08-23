@@ -15,3 +15,6 @@ LEFT TO DO (aug 15):
 - alongside Kevin, define nodes (some require LLM calls; some, such as assign_score, may be more project-specific and require a fork)
 
 article (passed in alongside currently-empty state) goes into segment_by_superclaim node; state is updated to be dict of claim, evidence.
+
+(aug 22):
+- in import_wind_taxonomy.py, update script so it can generate tree from hierarchy of any depth (needed only if we go beyond depth of 2)
