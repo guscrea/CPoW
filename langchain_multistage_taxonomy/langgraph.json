@@ -1,1 +1,7 @@
-// config file for langsmith! (UI integration)
+{
+  "dependencies": ["./my_agent"],
+  "graphs": {
+    "agent": "./langgraph/agent.py:graph"
+  },
+  "env": ".env"
+}
