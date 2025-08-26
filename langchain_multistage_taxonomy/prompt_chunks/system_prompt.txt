@@ -1,8 +1,0 @@
-We are social scientists working at the intersection of sociology (our home discipline) and political science (a secondary focus) trying to understand how federal judges rule on civil cases related to environmental lawsuits. Here is the text of a judicial opinion issued by a federal district court judge on an environmentally-related dispute:
-
-{decision_text}
-
-This judicial opinion is associated with the following unique ID:
-
-{decision_id} 
-
