@@ -1,0 +1,14 @@
+{system_prompt}
+
+
+Task 4. Summarize each of the principal legal-environmental arguments made by the defendant, as inferred from the judge's written opinion. Note that the defendant will make at least one argument, and may make up to ten arguments. Further note that the number of plaintiff arguments and defendant arguments are not necessarily the same. Do not condense many distinct arguments into one very brief summary. Please return all of the distinct arguments made by the defendant in the following format, with the number of rows corresponding to the number of defendant arguments:
+
+"Defendants assert:
+(1) [first defendant argument summary here]
+(2) [second defendant argument summary here, if the defendant makes more than one argument]
+(3) [third defendant argument summary here, if the defendant makes more than two arguments]
+…
+"
+
+Please provide only the defendant arguments summary in the specified format. 
+

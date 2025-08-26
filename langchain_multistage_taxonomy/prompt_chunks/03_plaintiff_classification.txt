@@ -1,0 +1,85 @@
+{system_prompt}
+
+Plaintiff arguments:
+{plaintiff_arguments}
+
+Task 3. Parse the plaintiff arguments above and classify each individual argument separately. The principle themes or guiding logic of the arguments that we expect to encounter are listed below. For each individual plaintiff argument (numbered 1, 2, 3, etc.) and each possible classification found below, please calculate a relevance score according to the scoring methodology provided. 
+
+Present your findings as a JSON object where:
+- The top-level keys are "argument_1", "argument_2", "argument_3", etc. (corresponding to each individual argument)
+- Each argument's value is an object containing classification results
+- Within each argument's classification object, each key is a principle theme as outlined below, and the value is an array containing:
+  - A boolean indicating if the issue is present (true/false) based on a relevance score >= 0.2
+  - The calculated relevance score (0.0-1.0)
+  - For scores >= 0.5: A brief quote or summary from that specific argument that best exemplifies why this category was scored as it was. IMPORTANT: Ensure all double quotes ("), single quotes ('), and apostrophes (e.g., in possessives as in "the post's text" or in contractions) within this string are escaped with a backslash (\) to prevent JSON parsing errors.
+
+Classification Scoring Methodology:
+
+Relevance Score (0.0-1.0): Calculate this score based on the density and explicitness of terms and concepts related to each framework within that specific individual argument. A higher score indicates more significant use of that type of reasoning in that particular argument.
+0.0 - 0.1: No mention or extremely tangential, fleeting mention.
+0.2 - 0.4: Minimal mention, perhaps a single keyword or a very brief, indirect reference. Does not fully meet the framework's detailed criteria.
+0.5 - 0.7: Moderate discussion, with several keywords or direct phrases aligning with the framework, but perhaps not the primary focus of the argument.
+0.8 - 1.0: Strong discussion, with frequent keywords, phrases, and conceptual alignment, indicating a central theme or significant focus of the argument.
+
+The principle themes or guiding logic of the arguments that we expect to encounter are as follows:
+cost reasoning: a set of arguments about the monetary, time, or opportunity costs of an action, or any argument involving a cost-benefit analysis. monetary or otherwise conventionally "economic" costs or benefits of whatever action or activity is at the heart of the dispute.
+ecological reasoning: a set of arguments about the ecological impacts or results of whatever action or activity is at the heart of the dispute. This kind of reasoning is often associated with the Rivers and Harbors Act, the Highways Act, the Endangered Species Act, the Clean Water Act, or the National Environmental Protection Act (NEPA). To be classified as "ecological" the arguments must focus on the ecosystems and the organisms that inhabit them beyond their impacts to humans alone. 
+Major Federal Action Reasoning: any argument relating to one party arguing that some action is, or is not, a “major federal action”, and therefore NEPA must apply. If the text contains exactly the words “major federal action”, the relevance score for this category should be 1.
+Missing Congressional Approval reasoning: Any argument relating to Congressional approval being missing or unnecessary to proceed with some action or project.
+Omission Reasoning: Any argument relating to an Environmental Analysis overlooking or omitting a crucial factor which would change the outcome of the analysis.
+Valid Environmental Analysis Reasoning: any argument that an environmental analysis is sufficient because it follows the applicable laws (usually NEPA).
+Feasible Alternative Reasoning: someone did (or did not) consider a viable alternative to a proposed action in an environmental analysis.
+Good Faith Analysis Reasoning: Any argument relating to any part of an Environmental Analysis being completed in bad faith (or not). This could be a specific part of the Environmental Analysis, but could also be the entire analysis.
+Consultation Reasoning: Any argument having to do with a group failing to consult with an industry expert, and therefore an environmental analysis is invalid.
+health reasoning: a set of arguments about the ways that a given activity might impact the health and well-being of humans in particular. 
+Undue burden reasoning: A set of arguments about how an action or non-action will cause an “undue burden” to a group, or any argument that references the 5th amendment of the Constitution. This category also includes cases where a group or individual is owed “just compensation”.
+Equality reasoning: A set of arguments about the ways that a given action or non-action will disparately impact some human groups more than others, perhaps in violation of basic notions of equal protection or other principles of fundamental human equality under the law.  
+federalism reasoning: a set of arguments that focus on the division of governing authority across different levels of government, usually the federal government versus the states and localities. Note that if an argument references the concept of sovereign immunity, that argument should be classified as standing reasoning.
+deferential reasoning: a set of arguments that focus on the deference to either agency experts, administrative discretion, or a previous interpretation and implementation of law. This pattern of reasoning could be invoked, for example, if one side invokes the idea of “Chevron deference”, “judicial comity”, “res judicata”, or a similar idea. Further, any side arguing some decision is within their “discretion” should also fall into deferential reasoning.
+conservative reasoning: a set of arguments that focus on the ways that changes or impacts will create unwanted and often feared but also ambiguous changes, for example, to the "character of a community" or a way of life or livelihood common in a particular region. It's important to note that this kind of reasoning is conservative reasoning in the sense of preserving the status quo, and need not have anything to do with political-ideological conservatism. It is equally important that for a pattern of reasoning to be classified as "conservative" in the sense invoked here, it must relate to fundamentally human activities and preferences. 
+Military reasoning: a set of arguments that focus on the military, national, or security implications of an action or activity (or non-activity). IMPORTANT: Note that for a pattern of reasoning to be classified as "military," it must directly or implicitly evoke military, geopolitical, or regional security threats to human well-being, as apart from the economic or health costs that such harm might also entail. If the threat of a flood is framed largely in terms of the economic costs it might generate, by way of damaged homes, lost work days, destroyed crops and so on, then the reasoning is principally "economic," not “military.” 
+standing reasoning: any argument that involves one party arguing the other has no standing to sue or that the court has a sufficient reason not to rule on the case at all. Most commonly, this occurs with ideas of lacking jurisdiction, whether a party has sustained injury allowing them to sue, sovereign immunity, separation of powers, or claims being too vague to provide injunctive relief.
+Recreation reasoning: Any argument that relates to some action causing a detriment or benefit to some recreational activity. Recreation in this context is defined as any activity done for enjoyment or sport, rather than for work or economic benefit. 
+Retroactive reasoning: Any argument related to applying laws to things that were created or initiated before the law was passed. Examples include, but are not limited to, one group trying to apply environmental standards from a law passed in 1970 to a project whose permit was given in 1968.
+Legal Technicality Reasoning: this reasoning is for any legal argument that does not fall into any other categories. NOTE: this category is only to be used if no others have a score of over 0.5. The score for this reasoning should be one minus the sum of the scores of all the other categories.
+
+Example JSON output for multiple arguments:
+{
+  "argument_1": {
+    "Economic reasoning": [true, 0.9, "The argument frequently discusses 'county revenue' and 'jobs creation' related to the project."],
+    "Ecological reasoning": [false, 0.1],
+    "Health reasoning": [false, 0.0],
+    "Safety and security reasoning": [false, 0.0],
+    "Conservative reasoning": [false, 0.0],
+    "Deferential reasoning": [false, 0.0],
+    "Legal-procedural reasoning": [false, 0.0],
+    "Justice reasoning": [false, 0.0],
+    "Federalism reasoning": [false, 0.0],
+    "Insufficient environmental impact statement reasoning": [false, 0.0],
+    "Standing reasoning": [false, 0.0],
+    "Undue burden reasoning": [false, 0.0],
+    "Recreation reasoning": [false, 0.0]
+  },
+  "argument_2": {
+    "Economic reasoning": [false, 0.0],
+    "Ecological reasoning": [true, 0.8, "References to 'protected species' and 'habitat destruction' were central to this argument."],
+    "Health reasoning": [true, 0.3, "Brief mention of 'air quality' but not the main focus."],
+    "Safety and security reasoning": [false, 0.0],
+    "Conservative reasoning": [false, 0.0],
+    "Deferential reasoning": [false, 0.0],
+    "Legal-procedural reasoning": [false, 0.0],
+    "Justice reasoning": [false, 0.0],
+    "Federalism reasoning": [false, 0.0],
+    "Insufficient environmental impact statement reasoning": [false, 0.0],
+    "Standing reasoning": [false, 0.0],
+    "Undue burden reasoning": [false, 0.0],
+    "Recreation reasoning": [false, 0.0]
+  }
+}
+
+If all scores for a particular argument are below 0.5, then include an "Legal Technicality reasoning" entry for that argument with:
+- a float calculated as 1 minus the sum of the relevance scores of the other reasoning categories
+- A brief quote or summary from that specific argument that best exemplifies why no other categories fit
+
+Please provide the classification for each individual judge argument as a JSON object. 
+

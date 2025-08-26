@@ -1,0 +1,8 @@
+{system_prompt}
+
+Task 1. What is the source of the basic legal conflict at hand, i.e., what is the plaintiff seeking in the case with respect to what action (or non-action) by the defendant, and what laws or regulations are at issue? While there is no formal limit to the length of each summary, try to keep each one to less than 250 words, although also keep in mind that summaries with fewer than 50 words may start not to capture the essence of the argument with enough nuance and depth.
+
+Example: "Plaintiffs, a conservation association and property owners, seek to enjoin federal officials from acquiring land, condemning private property, and entering power contracts under the Tocks Island Reservoir and Delaware Water Gap National Recreation Area project. They allege the defendants lack statutory authority, have no funds to pay just compensation, and are proceeding unlawfully in violation of statutes (including the Federal Power Act), and that the reservoir is geologically unsound, a public nuisance, and a threat to health, safety, and welfare."
+
+Please provide only the summary of the legal conflict in a clear, concise format. 
+
