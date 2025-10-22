@@ -40,7 +40,7 @@ for row in df.itertuples():
 
             pdf_acc = ""
             for idx, pdf_path in enumerate(pdf_paths):
-                pdf_acc += f"\n \n DOCUMENT #{idx}; LINK:{pdf_path}"
+                pdf_acc += f"\n \n DOCUMENT #{idx}; LINK:{pdf_path} \n"
                 try:
                     # Download to a temporary file
                     response = requests.get(pdf_path, timeout=10)
