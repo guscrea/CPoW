@@ -5,11 +5,13 @@ import json
 import requests
 import tempfile
 import os
+from datetime import datetime
 
-## TODO: 
-# figure out way to manage multiple PDFs per entry. Either put in same cell (loss of info) or add max 10 columns (unwieldy). HACK SOLUTION: same cell with very distinc headers per PDF.
+# notes: #
+# add documentation
 
-# then: make results presentable.
+## TODO: ##
+# implement concurrency! (fun & makes things more efficient)
 
 def extract(pdf_path):
     doc = pymupdf.open(pdf_path)
@@ -40,7 +42,7 @@ for row in df.itertuples():
 
             pdf_acc = ""
             for idx, pdf_path in enumerate(pdf_paths):
-                pdf_acc += f"\n \n DOCUMENT #{idx}; LINK:{pdf_path} \n"
+                pdf_acc += f"\n \n DOCUMENT #{idx}; LINK: {pdf_path} \n"
                 try:
                     # Download to a temporary file
                     response = requests.get(pdf_path, timeout=10)
@@ -61,4 +63,11 @@ for row in df.itertuples():
 
 print(df)
 
-df.to_csv('out.csv', index=False)
+# add metadata to dataframe, & generate csv:
+# (1) unique timestamp:
+now = datetime.now()
+timestamp = f"{now.year}-{now.month}-{now.day}_{now.hour}h{now.minute}m"
+# (2) add input csv path for future bookkeeping:
+df['metadata_input_path'] = in_csv_path
+# (3) output as csv!
+df.to_csv(f'out_{timestamp}.csv', index=False)
