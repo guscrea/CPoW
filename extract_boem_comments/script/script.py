@@ -10,6 +10,23 @@ from datetime import datetime
 # notes: #
 # add documentation
 
+# classify comments into types: e.g. 
+#   (1) textbox comment (1a) empty box implying attachments (1b) "see attached" (2c) "textbox comment"
+
+# identify type of content (e.g. we have journal articles, letters...)
+    # NOTE: there are some PDFs that are concatenation of multiple jounrla articles & powerpoints...
+    # Focus on human-written comments (e.g. letters) rather than sources.
+
+    # NOTE: firms often give line-by-line response to policy; make sure to make this a "category" \in human-written-comments, even if it seems abstruse.
+    # NOTE: differentiate between individual and group comments
+# NOTE: first row is always notice.
+
+# NOTE: good rule of thumb - when many attachments exist, attachment 1 is usually a letter giving context.
+
+# add matching key (i.e. boem docket ID)
+
+
+
 ## TODO: ##
 # implement concurrency! (fun & makes things more efficient)
 
@@ -26,7 +43,9 @@ in_csv_path = "../data/sample.csv"
 df = pd.read_csv(in_csv_path)
 
 # PROCESSING: 
-df = df[['Content_Files', 'Attachment_Files']]
+df = df[['Document ID', 'Content_Files', 'Attachment_Files']]
+df.insert(1, 'File_ID', None)
+
 print("DF before extract: \n")
 print(df.head(3))
 
